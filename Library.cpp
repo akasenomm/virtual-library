@@ -3,7 +3,6 @@
 #include "Library.h"
 
 Library::Library() {}
-
 Library::~Library() {}
 
 void Library::addBook(Book book) {

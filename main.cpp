@@ -1,11 +1,10 @@
 #include <iostream>
-#include <vector>
-#include <string>
 using namespace std;
 #include "user.h"
 
 int main() {
     std::cout << "Tere tulemast virtuaalsesse raamatukokku!\n";
+    User currentUser;
 
     while (true) {
         std::cout << "\nValikud:\n";
@@ -19,13 +18,10 @@ int main() {
 
         switch (choice) {
             case 1:
-                currentUserLogin();
-                } else {
-                    cout << "Vigane kasutajanimi või parool. Palun proovi uuesti.\n";
-                }
+                currentUser.login();
                 break;
             case 2:
-                createUser();
+                currentUser.createUser();
                 break;
             case 3:
                 cout << "Täname kasutamast virtuaalset raamatukogu. Head aega!\n";
@@ -33,8 +29,8 @@ int main() {
             default:
                 cout << "Vigane valik. Palun vali uuesti.\n";
         }
-    return 0;
+        return 0;
     }
 
 
-
+}
