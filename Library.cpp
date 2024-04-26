@@ -1,5 +1,8 @@
 // Library.cpp
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
 #include "Library.h"
 
 Library::Library() {}
@@ -68,3 +71,28 @@ void Library::returnBook(string name) {
         }
     }
 }
+
+void Library::showAllBooks() const {
+    for (const auto & book : books) {
+        Book &x = const_cast<Book &>(book.first);
+        cout << "Title: " << book.first.getName() << ", Count: " << book.second << endl;
+    }
+}
+
+void Library::addBooksFromFile(string filename) {
+    ifstream file(filename);
+    string line;
+    while (getline(file, line)) {
+        stringstream ss(line);
+        string name, author, genre;
+        int pagesCount;
+        getline(ss, name, ',');
+        getline(ss, author, ',');
+        ss >> pagesCount;
+        getline(ss, genre, ',');
+        Book book(name, author, pagesCount, genre);
+        addBook(book);
+    }
+    file.close();
+}
+

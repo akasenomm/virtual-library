@@ -5,6 +5,7 @@ using namespace std;
 int main() {
     std::cout << "Tere tulemast virtuaalsesse raamatukokku!\n";
     User currentUser;
+    Library* library = new Library();
 
     while (true) {
         std::cout << "\nValikud:\n";
