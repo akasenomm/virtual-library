@@ -117,7 +117,7 @@ void User::menu() const {
                     lib->showAllBooks();
                     break;
                 case 2: {
-                    string genre = "history";
+                    string genre = "History";
                     lib->getGenre(genre);
                     break;
                 }
