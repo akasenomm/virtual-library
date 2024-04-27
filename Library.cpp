@@ -47,15 +47,23 @@ void Library::printBookInfo(string name) {
         }
     }
 }
-
+void Library::getGenre(string name){
+    for (auto it = books.begin(); it != books.end(); ++it) {
+        if (it->first.getName() == name) {
+            Book bookInfo = it->first;
+            cout << "Genre: " << bookInfo.getGenre() << endl;
+            break;
+        }
+    }
+}
 void Library::borrowBook(string name) {
     for (auto it = books.begin(); it != books.end(); ++it) {
         if (it->first.getName() == name) {
             if (it->second > 0) {
                 it->second--;
-                cout << "Book borrowed successfully." << endl;
+                cout << "Raamatu laenutamine õnnestus!" << endl;
             } else {
-                cout << "No copies left to borrow." << endl;
+                cout << "Rohkem koopiad pole." << endl;
             }
             break;
         }

@@ -21,6 +21,7 @@ public:
     void returnBook(string name);
     void showAllBooks() const;
     void addBooksFromFile(string filename);
+    void getGenre(string name);
 private:
     map<Book, int> books;
 };

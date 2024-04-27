@@ -104,12 +104,26 @@ void User::menu() const {
     lib->addBooksFromFile("test.txt");
     switch (choice) {
         case 1:
-            lib->showAllBooks();
-            break;
+            std::cout << "\nPalun vali Žanr (1-4): ";
+            std::cout << "\nValikud:\n";
+            std::cout << "1. Vaata kõiki raamatuid\n";
+            std::cout << "2. History\n";
+            std::cout << "3. Fiction\n";
+            std::cout << "4. Nonfiction\n";
+            int choice2;
+            std::cin >> choice2;
+            switch (choice2) {
+                case 1:
+                    lib->showAllBooks();
+                    break;
+                case 2:
+                    string genre = "history";
+                    lib->getGenre(genre);
+            }
         case 2:
             std::cout << "Sisesta raamatu pealkiri, mida soovid laenutada: ";
             std::cin >> title;
-           lib->borrowBook(title);
+            lib->borrowBook(title);
             break;
         case 3:
             std::cout << "Sisesta raamatu pealkiri, mida soovid tagastada: ";
