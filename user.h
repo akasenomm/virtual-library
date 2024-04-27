@@ -150,6 +150,20 @@ void User::menu() {
             "Logi välja"
     };
 
+    vector<string> genreChoices = {
+            "Vaata kõiki raamatuid",
+            "History",
+            "Fiction",
+            "Dystopian",
+            "Non-fiction",
+            "Romance",
+            "Fantasy",
+            "Adventure",
+            "Epic",
+            "Modernist",
+            "Tragedy"
+    };
+
     string title;
     auto *lib = new Library;
     lib->addBooksFromFile("test.txt");
@@ -164,19 +178,11 @@ void User::menu() {
 
         switch (choice) {
             case 1:
-                cout << "\nPalun vali Žanr (1-11): ";
+                cout << "\nPalun vali Žanr (1-" << genreChoices.size() << "): ";
                 cout << "\nValikud:\n";
-                cout << "1. Vaata kõiki raamatuid\n";
-                cout << "2. History\n";
-                cout << "3. Fiction\n";
-                cout << "4. Dystopian\n";
-                cout << "5. Non-fiction\n";
-                cout << "6.  Romance\n";
-                cout << "7.  Fantasy\n";
-                cout << "8.  Adventure\n";
-                cout << "9.  Epic\n";
-                cout << "10.  Modernist\n";
-                cout << "11.  Tragedy\n";
+                for (int i = 0; i < genreChoices.size(); i++) {
+                    cout << i+1 << ". " << genreChoices[i] << "\n";
+                }
                 int choice2;
                 cin >> choice2;
                 switch (choice2) {
