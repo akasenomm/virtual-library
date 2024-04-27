@@ -10,7 +10,7 @@ string Book::getName() const {
     return name;
 }
 
-string Book::getAuthor() {
+string Book::getAuthor() const {
     return author;
 }
 

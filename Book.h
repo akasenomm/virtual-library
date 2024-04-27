@@ -12,7 +12,7 @@ public:
     ~Book();
 
     string getName() const;
-    string getAuthor();
+    string getAuthor() const;
     int getPagesCount();
     string getGenre() const;
 

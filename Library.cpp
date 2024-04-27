@@ -71,12 +71,19 @@ void Library::borrowBook(string name) {
         if ( bookname == name) {
             if (book.second > 0) {
                 book.second--;
+                borrowedBooks.push_back(book.first);
                 cout << "Raamatu laenutamine õnnestus!" << endl;
             } else {
                 cout << "Rohkem koopiad pole." << endl;
             }
             break;
         }
+    }
+}
+void Library::showBorrowedBooks() const {
+    cout << "Laenutatud raamatud:" << endl;
+    for (const auto & book : borrowedBooks) {
+        cout << "Pealkiri: " << book.getName() << ", Autor: " << book.getAuthor() << endl;
     }
 }
 
@@ -107,8 +114,8 @@ void Library::addBooksFromFile(string filename) {
         getline(ss, name, ',');
         getline(ss, author, ',');
         ss >> pagesCount;
-        ss.ignore(2, ',');  // Ignore the comma and the space after pagesCount
-        getline(ss, genre);  // Read the rest of the line into genre
+        ss.ignore(2, ',');
+        getline(ss, genre);
         Book book(name, author, pagesCount, genre);
         addBook(book);
     }

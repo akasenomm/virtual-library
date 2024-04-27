@@ -22,8 +22,10 @@ public:
     void showAllBooks() const;
     void addBooksFromFile(string filename);
     void getGenre(string name);
+    void showBorrowedBooks() const;
 private:
     map<Book, int> books;
+    vector<Book> borrowedBooks;
 };
 
 #endif // LIBRARY_H
