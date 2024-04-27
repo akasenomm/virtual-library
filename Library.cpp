@@ -57,10 +57,11 @@ void Library::getGenre(string name){
     }
 }
 void Library::borrowBook(string name) {
-    for (auto it = books.begin(); it != books.end(); ++it) {
-        if (it->first.getName() == name) {
-            if (it->second > 0) {
-                it->second--;
+    for (auto & book : books) {
+        const string &bookname = book.first.getName();
+        if ( bookname == name) {
+            if (book.second > 0) {
+                book.second--;
                 cout << "Raamatu laenutamine õnnestus!" << endl;
             } else {
                 cout << "Rohkem koopiad pole." << endl;
