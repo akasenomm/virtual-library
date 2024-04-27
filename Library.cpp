@@ -47,15 +47,20 @@ void Library::printBookInfo(string name) {
         }
     }
 }
-void Library::getGenre(string name){
-    for (auto it = books.begin(); it != books.end(); ++it) {
-        if (it->first.getName() == name) {
-            Book bookInfo = it->first;
-            cout << "Genre: " << bookInfo.getGenre() << endl;
-            break;
+void Library::getGenre(string genre) {
+    bool found = false;
+    for (const auto& it : books) {
+        if (it.first.getGenre() == genre) {
+            if (!found) {
+                cout << "Raamatud žanris '" << genre << "':" << endl;
+                found = true;
+            }
+            cout << it.first.getName() << endl;
+        }else{
+            cout << "Selles žanris pole hetkel saadavaid raamatuid" << endl;
         }
-    }
-}
+    }}
+
 void Library::borrowBook(string name) {
     for (auto & book : books) {
         const string &bookname = book.first.getName();
