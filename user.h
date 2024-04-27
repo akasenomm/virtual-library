@@ -119,7 +119,9 @@ void User::menu() const {
                 case 2:
                     string genre = "history";
                     lib->getGenre(genre);
+                    break;
             }
+            break;
         case 2:
             std::cout << "Sisesta raamatu pealkiri, mida soovid laenutada: ";
             std::cin >> title;
