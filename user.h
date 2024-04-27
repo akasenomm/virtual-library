@@ -18,12 +18,16 @@ public:
 
     void createUser();
     void login();
-    void menu() const;
+    void menu();
+    void saveUsersToFile() const;
+    void changePassword();
+    void changeUsername();
 
 private:
     Library library;
     map<std::string, std::string> users;
     string username;
+    string newUsername;
     string password;
     vector<std::string> borrowedBooks;
     string filename = "users.txt";
@@ -44,8 +48,7 @@ User::User() {
         file.close();
     }
 }
-User::~User() {
-    // Kui objekt hävitatakse, salvesta kasutajanimed ja paroolid faili
+void User::saveUsersToFile() const {
     std::ofstream file(filename);
     if (file.is_open()) {
         for (const auto& entry : users) {
@@ -54,6 +57,12 @@ User::~User() {
         file.close();
     }
 }
+User::~User() {
+    saveUsersToFile();
+}
+
+
+
 void User::createUser(){
     string username, password;
     cout << "Palun sisesta kasutajanimi: ";
@@ -86,7 +95,33 @@ void User::login() {
         std::cout << "Kasutajanimi või parool on vale. Palun proovi uuesti.\n";
     }
 }
-void User::menu() const {
+
+void User::changePassword() {
+    std::string newPassword;
+    std::cout << "Sisesta uus parool: ";
+    std::cin >> newPassword;
+    password = newPassword;
+    std::cout << "Parool on edukalt muudetud.\n";
+    saveUsersToFile();
+}
+
+void User::changeUsername() {
+    std::string newUsername;
+    std::cout << "Sisesta uus kasutajanimi: ";
+    std::cin >> newUsername;
+    auto it = users.find(username);
+    if (it != users.end()) {
+        users.erase(it);
+        username = newUsername;
+        users[newUsername] = password;
+        std::cout << "Kasutajanimi on edukalt muudetud.\n";
+        saveUsersToFile();
+    } else {
+        std::cout << "Kasutajanime muutmine ebaõnnestus. Kasutajanimi '" << username << "' ei eksisteeri.\n";
+    }
+}
+
+void User::menu() {
     int choice;
     std::string title;
     auto *lib = new Library;
@@ -98,9 +133,11 @@ void User::menu() const {
         std::cout << "2. Laenuta raamat\n";
         std::cout << "3. Tagasta raamat\n";
         std::cout << "4. Vaata laenutatud raamatuid\n";
-        std::cout << "5. Logi välja\n";
+        std::cout << "5. Muuda kasutajanime\n";
+        std::cout << "6. Muuda kasutaja salasõna\n";
+        std::cout << "7. Logi välja\n";
 
-        std::cout << "\nPalun vali tegevus (1-4): ";
+        std::cout << "\nPalun vali tegevus (1-7): ";
         std::cin >> choice;
 
 
@@ -160,7 +197,6 @@ void User::menu() const {
                         break;
                     }
                     case 4: {
-                        // SELLEGA PROBLEEM
                         string genre = "Dystopian";
                         lib->getGenre(genre);
 
@@ -314,14 +350,19 @@ void User::menu() const {
                 lib->showBorrowedBooks();
                 break;
             case 5:
+                changeUsername();
+                break;
+            case 6:
+                changePassword();
+                break;
+            case 7:
                 std::cout << "Oled välja logitud\n";
                 break;
             default:
                 std::cout << "Vigane valik. Palun proovi uuesti.\n";
                 break;
         }
-    } while (choice != 5);
+    } while (choice != 7);
 
-
-#endif //PROJEKT_USER_H
 }
+#endif //PROJEKT_USER_H
