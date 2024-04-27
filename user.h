@@ -100,19 +100,21 @@ void User::menu() const {
 
     std::string title;
 
+    auto* lib = new Library;
+    lib->addBooksFromFile("test.txt");
     switch (choice) {
         case 1:
-           // library.printBookInfo(kõikraamatud??);
+            lib->showAllBooks();
             break;
         case 2:
             std::cout << "Sisesta raamatu pealkiri, mida soovid laenutada: ";
             std::cin >> title;
-           //library.borrowBook(title);
+           lib->borrowBook(title);
             break;
         case 3:
             std::cout << "Sisesta raamatu pealkiri, mida soovid tagastada: ";
             std::cin >> title;
-            //library.returnBook(title);
+            lib->removeBook(title);
             break;
         case 4:
             std::cout << "Oled välja logitud\n";
