@@ -18,6 +18,6 @@ int Book::getPagesCount() {
     return pagesCount;
 }
 
-string Book::getGenre() {
+string Book::getGenre() const {
     return genre;
 }

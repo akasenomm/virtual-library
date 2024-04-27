@@ -14,7 +14,7 @@ public:
     string getName() const;
     string getAuthor();
     int getPagesCount();
-    string getGenre();
+    string getGenre() const;
 
     bool operator<(const Book &other) const {
         return name < other.getName();  // Compare books based on their names

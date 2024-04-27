@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <vector>
 #include "Library.h"
 
 Library::Library() {}
@@ -48,18 +49,21 @@ void Library::printBookInfo(string name) {
     }
 }
 void Library::getGenre(string genre) {
-    bool found = false;
+    vector<Book> genreBooks;
     for (const auto& it : books) {
         if (it.first.getGenre() == genre) {
-            if (!found) {
-                cout << "Raamatud žanris '" << genre << "':" << endl;
-                found = true;
-            }
-            cout << it.first.getName() << endl;
-        }else{
-            cout << "Selles žanris pole hetkel saadavaid raamatuid" << endl;
+            genreBooks.push_back(it.first);
         }
-    }}
+    }
+    if (genreBooks.empty()) {
+        cout << "Selles žanris pole hetkel saadavaid raamatuid" << endl;
+    } else {
+        cout << "Raamatud žanris '" << genre << "':" << endl;
+        for (auto &&Book : genreBooks) {
+            cout << Book.getName() << endl;
+        }
+    }
+}
 
 void Library::borrowBook(string name) {
     for (auto & book : books) {
@@ -103,10 +107,12 @@ void Library::addBooksFromFile(string filename) {
         getline(ss, name, ',');
         getline(ss, author, ',');
         ss >> pagesCount;
-        getline(ss, genre, ',');
+        ss.ignore(2, ',');  // Ignore the comma and the space after pagesCount
+        getline(ss, genre);  // Read the rest of the line into genre
         Book book(name, author, pagesCount, genre);
         addBook(book);
     }
     file.close();
 }
+
 
