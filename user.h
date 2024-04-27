@@ -120,6 +120,10 @@ void User::menu() const {
                     string genre = "history";
                     lib->getGenre(genre);
                     break;
+                case 3:
+                    string genre2 =  "fiction";
+                    lib->getGenre(genre2);
+                    break;
             }
             break;
         case 2:
