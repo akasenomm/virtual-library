@@ -3,18 +3,25 @@ using namespace std;
 #include "user.h"
 
 int main() {
-    std::cout << "Tere tulemast virtuaalsesse raamatukokku!\n";
+
+    cout << "Tere tulemast virtuaalsesse raamatukokku!\n";
     User currentUser;
 
     while (true) {
-        std::cout << "\nValikud:\n";
-        std::cout << "1. Logi sisse\n";
-        std::cout << "2. Loo uus kasutaja\n";
-        std::cout << "3. Välju\n";
+
+        cout << "\nValikud:\n";
+
+        cout << "1. Logi sisse\n";
+
+        cout << "2. Loo uus kasutaja\n";
+
+        cout << "3. Välju\n";
 
         int choice;
-        std::cout << "\nPalun vali tegevus (1-3): ";
-        std::cin >> choice;
+
+        cout << "\nPalun vali tegevus (1-3): ";
+
+        cin >> choice;
 
         switch (choice) {
             case 1:

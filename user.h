@@ -22,34 +22,36 @@ public:
     void saveUsersToFile() const;
     void changePassword();
     void changeUsername();
+    void selectGenreAndBorrowBook(Library* lib, string genre);
 
 private:
     Library library;
-    map<std::string, std::string> users;
+    map<string, string> users;
     string username;
     string newUsername;
     string password;
-    vector<std::string> borrowedBooks;
+    vector<string> borrowedBooks;
     string filename = "users.txt";
 };
 
 User::User() {
-    std::ifstream file(filename);
+    ifstream file(filename);
     if (file.is_open()) {
-        std::string line;
-        while (std::getline(file, line)) {
+        string line;
+        while (getline(file, line)) {
             size_t pos = line.find(' ');
-            if (pos != std::string::npos) {
-                std::string username = line.substr(0, pos);
-                std::string password = line.substr(pos + 1);
+            if (pos != string::npos) {
+                string username = line.substr(0, pos);
+                string password = line.substr(pos + 1);
                 users[username] = password;
             }
         }
         file.close();
     }
 }
+
 void User::saveUsersToFile() const {
-    std::ofstream file(filename);
+    ofstream file(filename);
     if (file.is_open()) {
         for (const auto& entry : users) {
             file << entry.first << ' ' << entry.second << '\n';
@@ -57,11 +59,10 @@ void User::saveUsersToFile() const {
         file.close();
     }
 }
+
 User::~User() {
     saveUsersToFile();
 }
-
-
 
 void User::createUser(){
     string username, password;
@@ -70,9 +71,9 @@ void User::createUser(){
 
     // Kontrollime, kas kasutajanimi on juba kasutusel
     if (users.find(username) != users.end()) {
-        std::cout << "Kasutajanimi '" << username << "' on juba kasutusel. Palun vali uus kasutajanimi.\n";
+        cout << "Kasutajanimi '" << username << "' on juba kasutusel. Palun vali uus kasutajanimi.\n";
         return;
-        }
+    }
 
     cout << "Palun sisesta parool: ";
     cin >> password;
@@ -89,261 +90,140 @@ void User::login() {
 
     auto it = users.find(username);
     if (it != users.end() && it->second == password) {
-        std::cout << "Edukas sisselogimine kasutajale " << username << ".\n";
+        cout << "Edukas sisselogimine kasutajale " << username << ".\n";
         menu();
     } else {
-        std::cout << "Kasutajanimi või parool on vale. Palun proovi uuesti.\n";
+        cout << "Kasutajanimi või parool on vale. Palun proovi uuesti.\n";
     }
 }
 
 void User::changePassword() {
-    std::string newPassword;
-    std::cout << "Sisesta uus parool: ";
-    std::cin >> newPassword;
+    string newPassword;
+    cout << "Sisesta uus parool: ";
+    cin >> newPassword;
     password = newPassword;
-    std::cout << "Parool on edukalt muudetud.\n";
+    cout << "Parool on edukalt muudetud.\n";
     saveUsersToFile();
 }
 
 void User::changeUsername() {
-    std::string newUsername;
-    std::cout << "Sisesta uus kasutajanimi: ";
-    std::cin >> newUsername;
+    string newUsername;
+    cout << "Sisesta uus kasutajanimi: ";
+    cin >> newUsername;
     auto it = users.find(username);
     if (it != users.end()) {
         users.erase(it);
         username = newUsername;
         users[newUsername] = password;
-        std::cout << "Kasutajanimi on edukalt muudetud.\n";
+        cout << "Kasutajanimi on edukalt muudetud.\n";
         saveUsersToFile();
     } else {
-        std::cout << "Kasutajanime muutmine ebaõnnestus. Kasutajanimi '" << username << "' ei eksisteeri.\n";
+        cout << "Kasutajanime muutmine ebaõnnestus. Kasutajanimi '" << username << "' ei eksisteeri.\n";
+    }
+}
+
+void User::selectGenreAndBorrowBook(Library* lib, string genre) {
+    lib->getGenre(genre);
+    cout << "Kas soovid midagi laenutada? (jah/ei): ";
+    string answer;
+    cin >> answer;
+    if (answer == "jah") {
+        string title;
+        cout << "Sisesta raamatu pealkiri, mida soovid laenutada: ";
+        cin.ignore();
+        getline(cin, title);
+        lib->borrowBook(title);
+    } else {
+        cout << "Vali järgmine tegevus.\n";
     }
 }
 
 void User::menu() {
     int choice;
-    std::string title;
+    vector<string> menuChoices = {
+            "Vaata saadaval olevaid raamatuid",
+            "Laenuta raamat",
+            "Tagasta raamat",
+            "Vaata laenutatud raamatuid",
+            "Muuda kasutajanime",
+            "Muuda kasutaja salasõna",
+            "Logi välja"
+    };
+
+    string title;
     auto *lib = new Library;
     lib->addBooksFromFile("test.txt");
 
     do {
-        std::cout << "\nValikud:\n";
-        std::cout << "1. Vaata saadaval olevaid raamatuid\n";
-        std::cout << "2. Laenuta raamat\n";
-        std::cout << "3. Tagasta raamat\n";
-        std::cout << "4. Vaata laenutatud raamatuid\n";
-        std::cout << "5. Muuda kasutajanime\n";
-        std::cout << "6. Muuda kasutaja salasõna\n";
-        std::cout << "7. Logi välja\n";
+        cout << "\nValikud:\n";
+        for (int i = 0; i < menuChoices.size(); i++) {
+            cout << i+1 << ". " << menuChoices[i] << "\n";
+        }
 
-        std::cout << "\nPalun vali tegevus (1-7): ";
-        std::cin >> choice;
-
+        cin >> choice;
 
         switch (choice) {
             case 1:
-                std::cout << "\nPalun vali Žanr (1-11): ";
-                std::cout << "\nValikud:\n";
-                std::cout << "1. Vaata kõiki raamatuid\n";
-                std::cout << "2. History\n";
-                std::cout << "3. Fiction\n";
-                std::cout << "4. Dystopian\n";
-                std::cout << "5. Non-fiction\n";
-                std::cout << "6.  Romance\n";
-                std::cout << "7.  Fantasy\n";
-                std::cout << "8.  Adventure\n";
-                std::cout << "9.  Epic\n";
-                std::cout << "10.  Modernist\n";
-                std::cout << "11.  Tragedy\n";
+                cout << "\nPalun vali Žanr (1-11): ";
+                cout << "\nValikud:\n";
+                cout << "1. Vaata kõiki raamatuid\n";
+                cout << "2. History\n";
+                cout << "3. Fiction\n";
+                cout << "4. Dystopian\n";
+                cout << "5. Non-fiction\n";
+                cout << "6.  Romance\n";
+                cout << "7.  Fantasy\n";
+                cout << "8.  Adventure\n";
+                cout << "9.  Epic\n";
+                cout << "10.  Modernist\n";
+                cout << "11.  Tragedy\n";
                 int choice2;
-                std::cin >> choice2;
+                cin >> choice2;
                 switch (choice2) {
                     case 1:
                         lib->showAllBooks();
                         break;
-                    case 2: {
-                        string genre = "History";
-                        lib->getGenre(genre);
-
-                        std::cout << "Kas soovid midagi laenutada? (jah/ei): ";
-                        std::string answer;
-                        std::cin >> answer;
-                        if (answer == "jah") {
-                            //tglt võiks ka kontrollida kas sisestati korrektne nimi!
-                            std::cout << "Sisesta raamatu pealkiri, mida soovid laenutada: ";
-                            std::cin.ignore();
-                            std::getline(std::cin, title);
-                            lib->borrowBook(title);
-                        } else {
-                            std::cout << "Vali järgmine tegevus.\n";
-                        }
+                    case 2:
+                        selectGenreAndBorrowBook(lib, "History");
                         break;
-                    }
-                    case 3: {
-                        string genre = "Fiction";
-                        lib->getGenre(genre);
-                        std::cout << "Kas soovid midagi laenutada? (jah/ei): ";
-                        std::string answer;
-                        std::cin >> answer;
-                        if (answer == "jah") {
-                            std::cout << "Sisesta raamatu pealkiri, mida soovid laenutada: ";
-                            std::cin.ignore();
-                            std::getline(std::cin, title);
-                            lib->borrowBook(title);
-                        } else {
-                            std::cout << "Vali järgmine tegevus.\n";
-                        }
+                    case 3:
+                        selectGenreAndBorrowBook(lib, "Fiction");
                         break;
-                    }
-                    case 4: {
-                        string genre = "Dystopian";
-                        lib->getGenre(genre);
-
-                        std::cout << "Kas soovid midagi laenutada? (jah/ei): ";
-                        std::string answer;
-                        std::cin >> answer;
-                        if (answer == "jah") {
-                            std::cout << "Sisesta raamatu pealkiri, mida soovid laenutada: ";
-                            std::cin.ignore();
-                            std::getline(std::cin, title);
-                            lib->borrowBook(title);
-                        } else {
-                            std::cout << "Vali järgmine tegevus.\n";
-                        }
+                    case 4:
+                        selectGenreAndBorrowBook(lib, "Dystopian");
                         break;
-                    }
-                    case 5: {
-                        string genre = "Non-fiction";
-                        lib->getGenre(genre);
-
-                        std::cout << "Kas soovid midagi laenutada? (jah/ei): ";
-                        std::string answer;
-                        std::cin >> answer;
-                        if (answer == "jah") {
-                            std::cout << "Sisesta raamatu pealkiri, mida soovid laenutada: ";
-                            std::cin.ignore();
-                            std::getline(std::cin, title);
-                            lib->borrowBook(title);
-                        } else {
-                            std::cout << "Vali järgmine tegevus.\n";
-                        }
+                    case 5:
+                        selectGenreAndBorrowBook(lib, "Non-fiction");
                         break;
-                    }
-                    case 6: {
-                        string genre = "Romance";
-                        lib->getGenre(genre);
-
-                        std::cout << "Kas soovid midagi laenutada? (jah/ei): ";
-                        std::string answer;
-                        std::cin >> answer;
-                        if (answer == "jah") {
-                            std::cout << "Sisesta raamatu pealkiri, mida soovid laenutada: ";
-                            std::cin.ignore();
-                            std::getline(std::cin, title);
-                            lib->borrowBook(title);
-                        } else {
-                            std::cout << "Vali järgmine tegevus.\n";
-                        }
+                    case 6:
+                        selectGenreAndBorrowBook(lib, "Romance");
                         break;
-                    }
-                    case 7: {
-                        string genre = "Fantasy";
-                        lib->getGenre(genre);
-
-                        std::cout << "Kas soovid midagi laenutada? (jah/ei): ";
-                        std::string answer;
-                        std::cin >> answer;
-                        if (answer == "jah") {
-                            std::cout << "Sisesta raamatu pealkiri, mida soovid laenutada: ";
-                            std::cin.ignore();
-                            std::getline(std::cin, title);
-                            lib->borrowBook(title);
-                        } else {
-                            std::cout << "Vali järgmine tegevus.\n";
-                        }
+                    case 7:
+                        selectGenreAndBorrowBook(lib, "Fantasy");
                         break;
-                    }
-                    case 8: {
-                        string genre = "Adventure";
-                        lib->getGenre(genre);
-
-                        std::cout << "Kas soovid midagi laenutada? (jah/ei): ";
-                        std::string answer;
-                        std::cin >> answer;
-                        if (answer == "jah") {
-                            std::cout << "Sisesta raamatu pealkiri, mida soovid laenutada: ";
-                            std::cin.ignore();
-                            std::getline(std::cin, title);
-                            lib->borrowBook(title);
-                        } else {
-                            std::cout << "Vali järgmine tegevus.\n";
-                        }
+                    case 8:
+                        selectGenreAndBorrowBook(lib, "Adventure");
                         break;
-                    }
-                    case 9: {
-                        string genre = "Epic";
-                        lib->getGenre(genre);
-
-                        std::cout << "Kas soovid midagi laenutada? (jah/ei): ";
-                        std::string answer;
-                        std::cin >> answer;
-                        if (answer == "jah") {
-                            std::cout << "Sisesta raamatu pealkiri, mida soovid laenutada: ";
-                            std::cin.ignore();
-                            std::getline(std::cin, title);
-                            lib->borrowBook(title);
-                        } else {
-                            std::cout << "Vali järgmine tegevus.\n";
-                        }
+                    case 9:
+                        selectGenreAndBorrowBook(lib, "Epic");
                         break;
-                    }
-                    case 10: {
-                        string genre = "Modernist";
-                        lib->getGenre(genre);
-
-                        std::cout << "Kas soovid midagi laenutada? (jah/ei): ";
-                        std::string answer;
-                        std::cin >> answer;
-                        if (answer == "jah") {
-                            std::cout << "Sisesta raamatu pealkiri, mida soovid laenutada: ";
-                            std::cin.ignore();
-                            std::getline(std::cin, title);
-                            lib->borrowBook(title);
-                        } else {
-                            std::cout << "Vali järgmine tegevus.\n";
-                        }
+                    case 10:
+                        selectGenreAndBorrowBook(lib, "Modernist");
                         break;
-                    }
-                    case 11: {
-                        string genre = "Tragedy";
-                        lib->getGenre(genre);
-
-                        std::cout << "Kas soovid midagi laenutada? (jah/ei): ";
-                        std::string answer;
-                        std::cin >> answer;
-                        if (answer == "jah") {
-                            std::cout << "Sisesta raamatu pealkiri, mida soovid laenutada: ";
-                            std::cin.ignore();
-                            std::getline(std::cin, title);
-                            lib->borrowBook(title);
-                        } else {
-                            std::cout << "Vali järgmine tegevus.\n";
-                        }
+                    case 11:
+                        selectGenreAndBorrowBook(lib, "Tragedy");
                         break;
-                    }
-
                 }
                 break;
             case 2:
-                std::cout << "Sisesta raamatu pealkiri, mida soovid laenutada: ";
-                std::cin.ignore();
-                std::getline(std::cin, title);
+                cout << "Sisesta raamatu pealkiri, mida soovid laenutada: ";
+                cin.ignore();
+                getline(cin, title);
                 lib->borrowBook(title);
                 break;
             case 3:
-                std::cout << "Sisesta raamatu pealkiri, mida soovid tagastada: ";
-                std::cin >> title;
+                cout << "Sisesta raamatu pealkiri, mida soovid tagastada: ";
+                cin >> title;
                 lib->removeBook(title);
                 break;
             case 4:
@@ -356,13 +236,12 @@ void User::menu() {
                 changePassword();
                 break;
             case 7:
-                std::cout << "Oled välja logitud\n";
+                cout << "Oled välja logitud\n";
                 break;
             default:
-                std::cout << "Vigane valik. Palun proovi uuesti.\n";
+                cout << "Vigane valik. Palun proovi uuesti.\n";
                 break;
         }
     } while (choice != 7);
-
 }
 #endif //PROJEKT_USER_H
