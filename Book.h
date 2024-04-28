@@ -17,7 +17,7 @@ public:
     string getGenre() const;
 
     bool operator<(const Book &other) const {
-        return name < other.getName();  // Compare books based on their names
+        return name < other.getName();
     };
 
 private:
