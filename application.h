@@ -3,7 +3,7 @@
 //
 #ifndef PROJEKT_USER_H
 #define PROJEKT_USER_H
-using namespace std;
+//using namespace std;
 #include "Library.h"
 #include "user.h"
 #include <iostream>

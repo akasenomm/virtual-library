@@ -1,0 +1,51 @@
+# Source file directory
+SRC_PATH := src/
+# Include file directory
+INC_PATH := include/
+# Object file directory
+OBJ_PATH := lib/
+# Executable file directory
+EXE_PATH := tests/
+
+# Choose compiler
+CXX := g++
+CXXFLAGS := -g -Wall -std=c++20 -Wpedantic
+CPPFLAGS := -Iinclude
+EXE := $(EXE_PATH)main.exe
+
+OBJ_FILES := $(OBJ_PATH)main.o $(OBJ_PATH)application.o $(OBJ_PATH)book.o $(OBJ_PATH)Library.o $(OBJ_PATH)user.o
+INC_FILES = $(wildcard $(INC_PATH)*.h)
+
+all: $(EXE)
+
+$(OBJ_PATH)main.o: $(SRC_PATH)main.cpp $(INC_FILES)
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(SRC_PATH)main.cpp -o $(OBJ_PATH)main.o
+
+$(OBJ_PATH)application.o: $(SRC_PATH)application.cpp $(INC_FILES)
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(SRC_PATH)application.cpp -o $(OBJ_PATH)application.o
+
+$(OBJ_PATH)book.o: $(SRC_PATH)book.cpp $(INC_FILES)
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(SRC_PATH)book.cpp -o $(OBJ_PATH)book.o
+
+$(OBJ_PATH)Library.o: $(SRC_PATH)Library.cpp $(INC_FILES)
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(SRC_PATH)Library.cpp -o $(OBJ_PATH)Library.o
+
+$(OBJ_PATH)user.o: $(SRC_PATH)user.cpp $(INC_FILES)
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(SRC_PATH)user.cpp -o $(OBJ_PATH)user.o
+
+
+$(EXE): $(EXE_PATH) $(OBJ_PATH) $(OBJ_FILES)
+	$(CXX) $(OBJ_FILES) -o $(EXE)
+
+run: $(EXE)
+	./$(EXE)
+
+$(EXE_PATH):
+	mkdir $(EXE_PATH)
+
+$(OBJ_PATH):
+	mkdir $(OBJ_PATH)
+
+clean:
+	rm -r $(OBJ_PATH)
+	rm -r $(EXE_PATH)
