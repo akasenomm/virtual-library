@@ -6,14 +6,14 @@ set(CMAKE_CXX_STANDARD 14)
 include_directories(.)
 
 add_executable(virtual_library
-        main.cpp
-        application.h
-        Library.h
-        Library.cpp
-        Book.cpp
-        Book.h
-        Library.cpp
-        user.h
-        application.cpp
-        user.cpp
+        src/main.cpp
+        include/application.h
+        include/Library.h
+        src/Library.cpp
+        src/Book.cpp
+        include/Book.h
+        src/Library.cpp
+        include/user.h
+        src/application.cpp
+        src/user.cpp
 )

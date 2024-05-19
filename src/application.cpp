@@ -1,4 +1,4 @@
-#include "application.h"
+#include "include/application.h"
 
 //
 // Created by arturkas on 28/04/2024.
