@@ -27,7 +27,7 @@ public:
     void run();
 
 private:
-    User* loggedInUser;
+    User* loggedInUser = nullptr;
     Library library;
     vector<User*>users;
     string newUsername;

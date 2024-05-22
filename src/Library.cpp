@@ -5,6 +5,7 @@
 #include <sstream>
 #include <vector>
 #include "include/Library.h"
+#include "include/sqlite3.h"
 
 Library::Library() {}
 Library::~Library() {}
@@ -104,22 +105,42 @@ void Library::showAllBooks() const {
     }
 }
 
-void Library::addBooksFromFile(string filename) {
-    ifstream file(filename);
-    string line;
-    while (getline(file, line)) {
-        stringstream ss(line);
-        string name, author, genre;
-        int pagesCount;
-        getline(ss, name, ',');
-        getline(ss, author, ',');
-        ss >> pagesCount;
-        ss.ignore(2, ',');
-        getline(ss, genre);
+void Library::addBooksFromDatabase(const std::string& databaseName) {
+    sqlite3* db;
+    sqlite3_stmt* stmt;
+    int rc;
+
+    // Open the database
+    rc = sqlite3_open(databaseName.c_str(), &db);
+    if (rc) {
+        std::cerr << "Can't open database: " << sqlite3_errmsg(db) << std::endl;
+        return;
+    }
+
+    // Create SQL query to select all books
+    const char* sql = "SELECT Name, Author, Pages, Genre FROM Books;";
+
+    // Prepare the SQL statement
+    rc = sqlite3_prepare_v2(db, sql, -1, &stmt, 0);
+    if (rc != SQLITE_OK) {
+        std::cerr << "Failed to fetch data: " << sqlite3_errmsg(db) << std::endl;
+        sqlite3_close(db);
+        return;
+    }
+
+    // Execute the SQL query and process the results
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        std::string name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+        std::string author = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+        int pagesCount = sqlite3_column_int(stmt, 2);
+        std::string genre = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+
+        // Create a book object and add it to the library
         Book book(name, author, pagesCount, genre);
         addBook(book);
     }
-    file.close();
-}
 
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+}
 

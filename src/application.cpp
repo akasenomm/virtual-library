@@ -25,7 +25,7 @@ void Application::run() {
                 break;
             case 3:
                 cout << "Täname kasutamast virtuaalset raamatukogu. Head aega!\n";
-                break;
+                exit(EXIT_SUCCESS); // Terminate the program
             default:
                 cout << "Vigane valik. Palun vali uuesti.\n";
                 break;
@@ -173,7 +173,8 @@ void Application::menu() {
 
     string title;
     auto *lib = new Library;
-    lib->addBooksFromFile("test.txt");
+//    lib->addBooksFromFile("test.txt");
+    lib->addBooksFromDatabase("librarydb");
 
     do {
         cout << "\nValikud:\n";

@@ -14,7 +14,7 @@ string Book::getAuthor() const {
     return author;
 }
 
-int Book::getPagesCount() {
+int Book::getPagesCount() const {
     return pagesCount;
 }
 

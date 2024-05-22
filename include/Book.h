@@ -13,7 +13,7 @@ public:
 
     string getName() const;
     string getAuthor() const;
-    int getPagesCount();
+    int getPagesCount() const;
     string getGenre() const;
 
     bool operator<(const Book &other) const {

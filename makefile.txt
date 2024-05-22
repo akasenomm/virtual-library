@@ -13,8 +13,8 @@ CXXFLAGS := -g -Wall -std=c++20 -Wpedantic
 CPPFLAGS := -Iinclude
 EXE := $(EXE_PATH)main.exe
 
-OBJ_FILES := $(OBJ_PATH)main.o $(OBJ_PATH)application.o $(OBJ_PATH)book.o $(OBJ_PATH)Library.o $(OBJ_PATH)user.o
-INC_FILES = $(wildcard $(INC_PATH)*.h)
+OBJ_FILES := $(OBJ_PATH)main.o $(OBJ_PATH)application.o $(OBJ_PATH)book.o $(OBJ_PATH)Library.o $(OBJ_PATH)user.o $(OBJ_PATH)sqlite3.o
+INC_FILES := $(wildcard $(INC_PATH)*.h)
 
 all: $(EXE)
 
@@ -33,9 +33,11 @@ $(OBJ_PATH)Library.o: $(SRC_PATH)Library.cpp $(INC_FILES)
 $(OBJ_PATH)user.o: $(SRC_PATH)user.cpp $(INC_FILES)
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(SRC_PATH)user.cpp -o $(OBJ_PATH)user.o
 
+$(OBJ_PATH)sqlite3.o: $(SRC_PATH)sqlite3.c $(INC_FILES)
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(SRC_PATH)sqlite3.c -o $(OBJ_PATH)sqlite3.o
 
 $(EXE): $(EXE_PATH) $(OBJ_PATH) $(OBJ_FILES)
-	$(CXX) $(OBJ_FILES) -o $(EXE)
+	$(CXX) $(OBJ_FILES) -o $(EXE) -ldl
 
 run: $(EXE)
 	./$(EXE)

@@ -24,6 +24,7 @@ public:
     void addBooksFromFile(string filename);
     void getGenre(string name);
     void showBorrowedBooks() const;
+    void addBooksFromDatabase(const string &databaseName);
 private:
     map<Book, int> books;
     vector<Book> borrowedBooks;
