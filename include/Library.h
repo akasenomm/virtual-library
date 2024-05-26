@@ -9,13 +9,8 @@
 
 class Library {
 public:
-    Library();
-    ~Library();
-
     void addBook(Book book);
-    void removeBook(std::string name);
     bool isBookInLibrary(std::string name);
-    void printBookInfo(std::string name);
     void getGenre(std::string genre);
     void borrowBook(std::string name, User* user);
     void showBorrowedBooks() const;

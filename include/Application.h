@@ -3,9 +3,8 @@
 //
 #ifndef PROJEKT_USER_H
 #define PROJEKT_USER_H
-//using namespace std;
 #include "Library.h"
-#include "user.h"
+#include "User.h"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -14,13 +13,9 @@
 
 class Application {
 public:
-    Application();
-    ~Application();
-
     void createUser();
     void login();
     void menu();
-    void saveUsersToFile() const;
     void changePassword();
     void changeUsername();
     void selectGenreAndBorrowBook(Library* lib, string genre);

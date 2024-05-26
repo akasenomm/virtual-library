@@ -1,4 +1,7 @@
-#include "include/application.h"
+#include "include/Application.h"
+#include <iostream>
+#include <vector>
+#include "include/Library.h"
 
 //
 // Created by arturkas on 28/04/2024.
@@ -33,53 +36,20 @@ void Application::run() {
     }
 }
 
-Application::Application() {
-    ifstream file(filename);
-    if (file.is_open()) {
-        string line;
-        while (getline(file, line)) {
-            size_t pos = line.find(' ');
-            if (pos != string::npos) {
-                string username = line.substr(0, pos);
-                string password = line.substr(pos + 1);
-                users.push_back(new User(username, password));
-            }
-        }
-        file.close();
-    }
-}
-
-void Application::saveUsersToFile() const {
-    ofstream file(filename);
-    if (file.is_open()) {
-        for ( User* user : users) {
-            file << user->getUsername() << ' ' << user->getPassword() << '\n';
-        }
-    }
-}
-
-Application::~Application() {
-    saveUsersToFile();
-}
-
 void Application::createUser(){
     string username, password;
     cout << "Palun sisesta kasutajanimi: ";
     cin >> username;
 
-    // Kontrollime, kas kasutajanimi on juba kasutusel
-    for (auto &&user : users) {
-        if (user->getUsername() == username) {
-            cout << "Kasutajanimi '" << username << "' on juba kasutusel. Palun vali uus kasutajanimi\n";
-            return;
-        }
-    }
-
     cout << "Palun sisesta parool: ";
     cin >> password;
-    users.push_back(new User(username, password));
-    cout << "Kasutaja '" << username << "' on loodud.\n";
-    saveUsersToFile();
+
+    User newUser(username, password);
+    if (newUser.createUser(username, password)) {
+        cout << "Kasutaja '" << username << "' on loodud.\n";
+    } else {
+        cout << "Kasutajanimi '" << username << "' on juba kasutusel. Palun vali uus kasutajanimi\n";
+    }
 }
 
 void Application::login() {
@@ -89,12 +59,7 @@ void Application::login() {
     cout << "Sisesta parool: ";
     cin >> password;
 
-    for (User* user : users) {
-        if (user->getUsername() == username && user->getPassword() == password) {
-            loggedInUser = user;
-            break;
-        }
-    }
+    loggedInUser = User::loginUser(username, password);
 
     if (loggedInUser != nullptr) {
         cout << "Edukas sisselogimine kasutajale " << username << ".\n";
@@ -109,11 +74,12 @@ void Application::changePassword() {
     cout << "Sisesta uus parool: ";
     cin >> newPassword;
     if (loggedInUser != nullptr) {
-        loggedInUser->setPassword( newPassword);
+        loggedInUser->setPassword(newPassword);
+        User::updateUserPassword(loggedInUser->getUsername(), newPassword);
+        cout << "Parool on edukalt muudetud.\n";
     } else {
-        cout << "Login first" << "\n";
+        cout << "Logi esmalt sisse.\n";
     }
-    saveUsersToFile();
 }
 
 void Application::changeUsername() {
@@ -121,12 +87,16 @@ void Application::changeUsername() {
     cout << "Sisesta uus kasutajanimi: ";
     cin >> newUsername;
     if (loggedInUser != nullptr) {
+        string oldUsername = loggedInUser->getUsername();
         loggedInUser->setUsername(newUsername);
-        cout << "Nimi muudetud" << "\n";
+        if (User::updateUserUsername(oldUsername, newUsername)) {
+            cout << "Kasutajanimi on edukalt muudetud.\n";
+        } else {
+            cout << "Kasutajanime muutmine ebaõnnestus. Uus kasutajanimi võib olla juba kasutusel.\n";
+        }
     } else {
-        cout << "Log in first" << "\n";
+        cout << "Logi esmalt sisse.\n";
     }
-    saveUsersToFile();
 }
 
 void Application::selectGenreAndBorrowBook(Library* lib, string genre) {
@@ -196,7 +166,7 @@ void Application::menu() {
                     if (genreChoice == 1) {
                         lib->showAllBooks();
                     } else {
-                        selectGenreAndBorrowBook(lib, genreChoices[genreChoice]);
+                        selectGenreAndBorrowBook(lib, genreChoices[genreChoice - 1]);
                     }
                 } else {
                     cout << "Vigane valik. Palun proovi uuesti.\n";

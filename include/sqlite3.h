@@ -9,7 +9,7 @@
 **    May you share freely, never taking more than you give.
 **
 *************************************************************************
-** This header file defines the interface that the SQLite library
+** This header file defines the interface that the SQLite Library
 ** presents to client programs.  If a C-function, structure, datatype,
 ** or constant definition does not appear in this file, then it is
 ** not a published API of SQLite, is subject to change without
@@ -156,11 +156,11 @@ extern "C" {
 **
 ** These interfaces provide the same information as the [SQLITE_VERSION],
 ** [SQLITE_VERSION_NUMBER], and [SQLITE_SOURCE_ID] C preprocessor macros
-** but are associated with the library instead of the header file.  ^(Cautious
+** but are associated with the Library instead of the header file.  ^(Cautious
 ** programmers might include assert() statements in their application to
 ** verify that values returned by these interfaces match the macros in
 ** the header, and thus ensure that the application is
-** compiled with matching library and header files.
+** compiled with matching Library and header files.
 **
 ** <blockquote><pre>
 ** assert( sqlite3_libversion_number()==SQLITE_VERSION_NUMBER );
@@ -1569,7 +1569,7 @@ struct sqlite3_vfs {
 ** CAPI3REF: Initialize The SQLite Library
 **
 ** ^The sqlite3_initialize() routine initializes the
-** SQLite library.  ^The sqlite3_shutdown() routine
+** SQLite Library.  ^The sqlite3_shutdown() routine
 ** deallocates any resources that were allocated by sqlite3_initialize().
 ** These routines are designed to aid in process initialization and
 ** shutdown on embedded systems.  Workstation applications using
@@ -1599,13 +1599,13 @@ struct sqlite3_vfs {
 **
 ** ^The sqlite3_initialize() routine returns [SQLITE_OK] on success.
 ** ^If for some reason, sqlite3_initialize() is unable to initialize
-** the library (perhaps it is unable to allocate a needed resource such
+** the Library (perhaps it is unable to allocate a needed resource such
 ** as a mutex) it returns an [error code] other than [SQLITE_OK].
 **
 ** ^The sqlite3_initialize() routine is called internally by many other
 ** SQLite interfaces so that an application usually does not need to
 ** invoke sqlite3_initialize() directly.  For example, [sqlite3_open()]
-** calls sqlite3_initialize() so the SQLite library will be automatically
+** calls sqlite3_initialize() so the SQLite Library will be automatically
 ** initialized when [sqlite3_open()] is called if it has not be initialized
 ** already.  ^However, if SQLite is compiled with the [SQLITE_OMIT_AUTOINIT]
 ** compile-time option, then the automatic calls to sqlite3_initialize()
@@ -1618,7 +1618,7 @@ struct sqlite3_vfs {
 ** default behavior in some future release of SQLite.
 **
 ** The sqlite3_os_init() routine does operating-system specific
-** initialization of the SQLite library.  The sqlite3_os_end()
+** initialization of the SQLite Library.  The sqlite3_os_end()
 ** routine undoes the effect of sqlite3_os_init().  Typical tasks
 ** performed by these routines include allocation or deallocation
 ** of static resources, initialization of global variables,
@@ -1665,7 +1665,7 @@ SQLITE_API int sqlite3_os_end(void);
 ** in the first argument.
 **
 ** For most configuration options, the sqlite3_config() interface
-** may only be invoked prior to library initialization using
+** may only be invoked prior to Library initialization using
 ** [sqlite3_initialize()] or after shutdown by [sqlite3_shutdown()].
 ** The exceptional configuration options that may be invoked at any time
 ** are called "anytime configuration options".
@@ -1726,7 +1726,7 @@ SQLITE_API int sqlite3_db_config(sqlite3*, int op, ...);
 ** conditions.
 **
 ** The xMalloc, xRealloc, and xFree methods must work like the
-** malloc(), realloc() and free() functions from the standard C library.
+** malloc(), realloc() and free() functions from the standard C Library.
 ** ^SQLite guarantees that the second argument to
 ** xRealloc is always a value returned by a prior call to xRoundup.
 **
@@ -1838,7 +1838,7 @@ struct sqlite3_mem_methods {
 ** all mutexes including the recursive
 ** mutexes on [database connection] and [prepared statement] objects.
 ** In this mode (which is the default when SQLite is compiled with
-** [SQLITE_THREADSAFE=1]) the SQLite library will itself serialize access
+** [SQLITE_THREADSAFE=1]) the SQLite Library will itself serialize access
 ** to [database connections] and [prepared statements] so that the
 ** application is free to use the same [database connection] or the
 ** same [prepared statement] in different threads at the same time.
@@ -2051,7 +2051,7 @@ struct sqlite3_mem_methods {
 ** <dd>This option is only available if sqlite is compiled with the
 ** [SQLITE_ENABLE_SQLLOG] pre-processor macro defined. The first argument should
 ** be a pointer to a function of type void(*)(void*,sqlite3*,const char*, int).
-** The second should be of type (void*). The callback is invoked by the library
+** The second should be of type (void*). The callback is invoked by the Library
 ** in three separate circumstances, identified by the value passed as the
 ** fourth parameter. If the fourth parameter is 0, then the database connection
 ** passed as the second argument has just been opened. The third argument
@@ -2378,7 +2378,7 @@ struct sqlite3_mem_methods {
 ** help ensure that it does not happen by accident. Because this
 ** feature must be capable of resetting corrupt databases, and
 ** shutting down virtual tables may require access to that corrupt
-** storage, the library must abandon any installed virtual tables
+** storage, the Library must abandon any installed virtual tables
 ** without calling their xDestroy() methods.
 **
 ** [[SQLITE_DBCONFIG_DEFENSIVE]] <dt>SQLITE_DBCONFIG_DEFENSIVE</dt>
@@ -2967,9 +2967,9 @@ SQLITE_API void sqlite3_free_table(char **result);
 ** CAPI3REF: Formatted String Printing Functions
 **
 ** These routines are work-alikes of the "printf()" family of functions
-** from the standard C library.
+** from the standard C Library.
 ** These routines understand most of the common formatting options from
-** the standard library printf()
+** the standard Library printf()
 ** plus some additional non-standard formats ([%q], [%Q], [%w], and [%z]).
 ** See the [built-in printf()] documentation for details.
 **
@@ -2981,7 +2981,7 @@ SQLITE_API void sqlite3_free_table(char **result);
 ** memory to hold the resulting string.
 **
 ** ^(The sqlite3_snprintf() routine is similar to "snprintf()" from
-** the standard C library.  The result is written into the
+** the standard C Library.  The result is written into the
 ** buffer supplied as the second parameter whose size is given by
 ** the first parameter. Note that the order of the
 ** first two parameters is reversed from snprintf().)^  This is an
@@ -3104,7 +3104,7 @@ SQLITE_API sqlite3_uint64 sqlite3_msize(void*);
 ** was last reset.  ^The values returned by [sqlite3_memory_used()] and
 ** [sqlite3_memory_highwater()] include any overhead
 ** added by SQLite in its implementation of [sqlite3_malloc()],
-** but not overhead added by the any underlying system library
+** but not overhead added by the any underlying system Library
 ** routines that [sqlite3_malloc()] may call.
 **
 ** ^The memory high-water mark is reset to the current value of
@@ -4871,7 +4871,7 @@ SQLITE_API const void *sqlite3_column_name16(sqlite3_stmt*, int N);
 ** ^As with all other SQLite APIs, those whose names end with "16" return
 ** UTF-16 encoded strings and the other functions return UTF-8.
 **
-** ^These APIs are only available if the library was compiled with the
+** ^These APIs are only available if the Library was compiled with the
 ** [SQLITE_ENABLE_COLUMN_METADATA] C-preprocessor symbol.
 **
 ** If two or more threads call one or more
@@ -6959,7 +6959,7 @@ SQLITE_API int sqlite3_enable_shared_cache(int);
 **
 ** ^The sqlite3_release_memory() interface attempts to free N bytes
 ** of heap memory by deallocating non-essential memory allocations
-** held by the database library.   Memory used to cache database
+** held by the database Library.   Memory used to cache database
 ** pages to improve performance is an example of non-essential memory.
 ** ^sqlite3_release_memory() returns the number of bytes actually freed,
 ** which might be more or less than the amount requested.
@@ -7148,10 +7148,10 @@ SQLITE_API int sqlite3_table_column_metadata(
 ** CAPI3REF: Load An Extension
 ** METHOD: sqlite3
 **
-** ^This interface loads an SQLite extension library from the named file.
+** ^This interface loads an SQLite extension Library from the named file.
 **
 ** ^The sqlite3_load_extension() interface attempts to load an
-** [SQLite extension] library contained in the file zFile.  If
+** [SQLite extension] Library contained in the file zFile.  If
 ** the file cannot be loaded directly, attempts are made to load
 ** with various operating-system specific extensions added.
 ** So for example, if "samplelib" cannot be loaded, then names like
@@ -7190,7 +7190,7 @@ SQLITE_API int sqlite3_table_column_metadata(
 */
 SQLITE_API int sqlite3_load_extension(
   sqlite3 *db,          /* Load the extension into this database connection */
-  const char *zFile,    /* Name of the shared library containing extension */
+  const char *zFile,    /* Name of the shared Library containing extension */
   const char *zProc,    /* Entry point.  Derived from zFile if 0 */
   char **pzErrMsg       /* Put error message here if not 0 */
 );
@@ -7986,7 +7986,7 @@ SQLITE_API int sqlite3_vfs_unregister(sqlite3_vfs*);
 **
 ** If SQLite is compiled with the SQLITE_MUTEX_APPDEF preprocessor
 ** macro defined (with "-DSQLITE_MUTEX_APPDEF=1"), then no mutex
-** implementation is included with the library. In this case the
+** implementation is included with the Library. In this case the
 ** application must supply a custom mutex implementation using the
 ** [SQLITE_CONFIG_MUTEX] option of the sqlite3_config() function
 ** before calling sqlite3_initialize() or any other public sqlite3_
@@ -8288,8 +8288,8 @@ SQLITE_API int sqlite3_file_control(sqlite3*, const char *zDbName, int op, void*
 ** the number, meaning, and operation of all subsequent parameters.
 **
 ** This interface is not for use by applications.  It exists solely
-** for verifying the correct operation of the SQLite library.  Depending
-** on how the SQLite library is compiled, this interface might not exist.
+** for verifying the correct operation of the SQLite Library.  Depending
+** on how the SQLite Library is compiled, this interface might not exist.
 **
 ** The details of the operation codes, their meanings, the parameters
 ** they take, and what they do are all subject to change without notice.
@@ -8576,7 +8576,7 @@ SQLITE_API int sqlite3_status64(
 ** <dd>This parameter is the current amount of memory checked out
 ** using [sqlite3_malloc()], either directly or indirectly.  The
 ** figure includes calls made to [sqlite3_malloc()] by the application
-** and internal memory usage by the SQLite library.  Auxiliary page-cache
+** and internal memory usage by the SQLite Library.  Auxiliary page-cache
 ** memory controlled by [SQLITE_CONFIG_PAGECACHE] is not included in
 ** this parameter.  The amount returned is the sum of the allocation
 ** sizes as reported by the xSize method in [sqlite3_mem_methods].</dd>)^
@@ -9341,7 +9341,7 @@ SQLITE_API int sqlite3_backup_pagecount(sqlite3_backup *p);
 ** [SQLite Shared-Cache Mode] for a description of shared-cache locking.
 ** ^This API may be used to register a callback that SQLite will invoke
 ** when the connection currently holding the required lock relinquishes it.
-** ^This API is only available if the library was compiled with the
+** ^This API is only available if the Library was compiled with the
 ** [SQLITE_ENABLE_UNLOCK_NOTIFY] C-preprocessor symbol defined.
 **
 ** See Also: [Using the SQLite Unlock Notification Feature].
@@ -10293,7 +10293,7 @@ SQLITE_API int sqlite3_stmt_scanstatus_v2(
 **
 ** ^Zero all [sqlite3_stmt_scanstatus()] related event counters.
 **
-** This API is only available if the library is built with pre-processor
+** This API is only available if the Library is built with pre-processor
 ** symbol [SQLITE_ENABLE_STMT_SCANSTATUS] defined.
 */
 SQLITE_API void sqlite3_stmt_scanstatus_reset(sqlite3_stmt*);

@@ -4,8 +4,6 @@
 Book::Book(string name, string author, int pagesCount, string genre)
         : name(name), author(author), pagesCount(pagesCount), genre(genre) {}
 
-Book::~Book() {}
-
 string Book::getName() const {
     return name;
 }

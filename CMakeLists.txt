@@ -7,12 +7,12 @@ include_directories(.)
 
 add_executable(virtual_library
         src/main.cpp
-        include/application.h
+        include/Application.h
         include/Library.h
-        src/Library.cpp
-        src/Book.cpp
+        src/library.cpp
+        src/book.cpp
         include/Book.h
-        include/user.h
+        include/User.h
         src/application.cpp
         src/user.cpp
         src/sqlite3.c  # Add sqlite3.c to your sources

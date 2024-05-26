@@ -3,7 +3,7 @@
 #include <unordered_set>
 #include <vector>
 #include "include/Book.h"
-#include "include/application.h"
+#include "include/Application.h"
 #include "include/sqlite3.h"
 
 bool operator==(const Book& a, const Book& b) {
@@ -27,24 +27,36 @@ void createAndPopulateDatabase(const std::vector<Book>& books) {
         return;
     }
 
-    const char* sqlCreate = "CREATE TABLE IF NOT EXISTS Books ("
-                            "Name TEXT NOT NULL, "
-                            "Author TEXT NOT NULL, "
-                            "Pages INT NOT NULL, "
-                            "Genre TEXT NOT NULL, "
-                            "Count INT NOT NULL);";
+    const char* sqlCreateBooks = "CREATE TABLE IF NOT EXISTS Books ("
+                                 "Name TEXT NOT NULL, "
+                                 "Author TEXT NOT NULL, "
+                                 "Pages INT NOT NULL, "
+                                 "Genre TEXT NOT NULL, "
+                                 "Count INT NOT NULL);";
 
-    rc = sqlite3_exec(db, sqlCreate, nullptr, 0, &errMsg);
+    const char* sqlCreateUsers = "CREATE TABLE IF NOT EXISTS Users ("
+                                 "Username TEXT PRIMARY KEY, "
+                                 "Password TEXT NOT NULL);";
+
+    rc = sqlite3_exec(db, sqlCreateBooks, nullptr, 0, &errMsg);
     if (rc != SQLITE_OK) {
-        std::cerr << "SQL error in creating table: " << errMsg << std::endl;
+        std::cerr << "SQL error in creating Books table: " << errMsg << std::endl;
         sqlite3_free(errMsg);
         sqlite3_close(db);
         return;
     }
 
-    const char* sqlInsert = "INSERT INTO Books (Name, Author, Pages, Genre, Count) VALUES (?, ?, ?, ?, ?);";
-    sqlite3_stmt* stmt;
-    rc = sqlite3_prepare_v2(db, sqlInsert, -1, &stmt, nullptr);
+    rc = sqlite3_exec(db, sqlCreateUsers, nullptr, 0, &errMsg);
+    if (rc != SQLITE_OK) {
+        std::cerr << "SQL error in creating Users table: " << errMsg << std::endl;
+        sqlite3_free(errMsg);
+        sqlite3_close(db);
+        return;
+    }
+
+    const char* sqlInsertBooks = "INSERT INTO Books (Name, Author, Pages, Genre, Count) VALUES (?, ?, ?, ?, ?);";
+    sqlite3_stmt* stmtBooks;
+    rc = sqlite3_prepare_v2(db, sqlInsertBooks, -1, &stmtBooks, nullptr);
     if (rc != SQLITE_OK) {
         std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
         sqlite3_close(db);
@@ -54,23 +66,24 @@ void createAndPopulateDatabase(const std::vector<Book>& books) {
     int count = 0;
     for (const auto& book : books) {
         count++;
-        sqlite3_bind_text(stmt, 1, book.getName().c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_text(stmt, 2, book.getAuthor().c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_int(stmt, 3, book.getPagesCount());
-        sqlite3_bind_text(stmt, 4, book.getGenre().c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_int(stmt, 5, count);
+        sqlite3_bind_text(stmtBooks, 1, book.getName().c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(stmtBooks, 2, book.getAuthor().c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_int(stmtBooks, 3, book.getPagesCount());
+        sqlite3_bind_text(stmtBooks, 4, book.getGenre().c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_int(stmtBooks, 5, count);
 
-        rc = sqlite3_step(stmt);
+        rc = sqlite3_step(stmtBooks);
         if (rc != SQLITE_DONE) {
             std::cerr << "SQL error in inserting data: " << sqlite3_errmsg(db) << std::endl;
             break;
         }
-        sqlite3_reset(stmt);
+        sqlite3_reset(stmtBooks);
     }
 
-    sqlite3_finalize(stmt);
+    sqlite3_finalize(stmtBooks);
     sqlite3_close(db);
 }
+
 
 std::vector<Book> parseBooks(const std::string& data) {
     std::istringstream ss(data);

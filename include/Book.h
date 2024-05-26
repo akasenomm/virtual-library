@@ -9,7 +9,6 @@ using namespace std;
 class Book {
 public:
     Book(string name, string author, int pagesCount, string genre);
-    ~Book();
 
     string getName() const;
     string getAuthor() const;

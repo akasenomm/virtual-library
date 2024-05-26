@@ -3,23 +3,11 @@
 #include <algorithm>
 #include "include/sqlite3.h"
 
-Library::Library() {}
-Library::~Library() {}
-
 void Library::addBook(Book book) {
     if (isBookInLibrary(book.getName())) {
         books[book]++;
     } else {
         books[book] = 1;
-    }
-}
-
-void Library::removeBook(std::string name) {
-    for (auto it = books.begin(); it != books.end(); ++it) {
-        if (it->first.getName() == name) {
-            books.erase(it);
-            break;
-        }
     }
 }
 
@@ -32,19 +20,6 @@ bool Library::isBookInLibrary(std::string name) {
     return false;
 }
 
-void Library::printBookInfo(std::string name) {
-    for (auto it = books.begin(); it != books.end(); ++it) {
-        if (it->first.getName() == name) {
-            Book bookInfo = it->first;
-            std::cout << "Name: " << bookInfo.getName() << std::endl;
-            std::cout << "Author: " << bookInfo.getAuthor() << std::endl;
-            std::cout << "Pages Count: " << bookInfo.getPagesCount() << std::endl;
-            std::cout << "Genre: " << bookInfo.getGenre() << std::endl;
-            std::cout << "Quantity: " << it->second << std::endl;
-            break;
-        }
-    }
-}
 
 void Library::getGenre(std::string genre) {
     std::vector<Book> genreBooks;
@@ -111,12 +86,12 @@ void Library::returnBook(std::string name) {
             if (bookName == name) {
                 book.second++;
                 borrowedBooks.erase(it);
-                std::cout << "Book returned successfully." << std::endl;
+                std::cout << "Raamat tagastatud." << std::endl;
                 return;
             }
         }
     } else {
-        std::cout << "Book not found in borrowed list." << std::endl;
+        std::cout << "Raamatut ei leitud laenutatud raamatute hulgast." << std::endl;
     }
 }
 
@@ -139,10 +114,8 @@ void Library::addBooksFromDatabase(const std::string& databaseName) {
         return;
     }
 
-    // Create SQL query to select all books
     const char* sql = "SELECT Name, Author, Pages, Genre FROM Books;";
 
-    // Prepare the SQL statement
     rc = sqlite3_prepare_v2(db, sql, -1, &stmt, 0);
     if (rc != SQLITE_OK) {
         std::cerr << "Failed to fetch data: " << sqlite3_errmsg(db) << std::endl;
@@ -150,14 +123,12 @@ void Library::addBooksFromDatabase(const std::string& databaseName) {
         return;
     }
 
-    // Execute the SQL query and process the results
     while (sqlite3_step(stmt) == SQLITE_ROW) {
         std::string name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
         std::string author = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
         int pagesCount = sqlite3_column_int(stmt, 2);
         std::string genre = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
 
-        // Create a book object and add it to the library
         Book book(name, author, pagesCount, genre);
         addBook(book);
     }
