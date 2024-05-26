@@ -139,7 +139,7 @@ void Application::selectGenreAndBorrowBook(Library* lib, string genre) {
         cout << "Sisesta raamatu pealkiri, mida soovid laenutada: ";
         cin.ignore();
         getline(cin, title);
-        lib->borrowBook(title);
+        lib->borrowBook(title, loggedInUser);
     } else {
         cout << "Vali järgmine tegevus.\n";
     }
@@ -173,13 +173,12 @@ void Application::menu() {
 
     string title;
     auto *lib = new Library;
-//    lib->addBooksFromFile("test.txt");
     lib->addBooksFromDatabase("librarydb");
 
     do {
         cout << "\nValikud:\n";
         for (int i = 0; i < menuChoices.size(); i++) {
-            cout << i+1 << ". " << menuChoices[i] << "\n";
+            cout << i + 1 << ". " << menuChoices[i] << "\n";
         }
 
         cin >> choice;
@@ -189,56 +188,31 @@ void Application::menu() {
                 cout << "\nPalun vali Žanr (1-" << genreChoices.size() << "): ";
                 cout << "\nValikud:\n";
                 for (int i = 0; i < genreChoices.size(); i++) {
-                    cout << i+1 << ". " << genreChoices[i] << "\n";
+                    cout << i + 1 << ". " << genreChoices[i] << "\n";
                 }
-                int choice2;
-                cin >> choice2;
-                switch (choice2) {
-                    case 1:
+                int genreChoice;
+                cin >> genreChoice;
+                if (genreChoice >= 1 && genreChoice <= genreChoices.size()) {
+                    if (genreChoice == 1) {
                         lib->showAllBooks();
-                        break;
-                    case 2:
-                        selectGenreAndBorrowBook(lib, "History");
-                        break;
-                    case 3:
-                        selectGenreAndBorrowBook(lib, "Fiction");
-                        break;
-                    case 4:
-                        selectGenreAndBorrowBook(lib, "Dystopian");
-                        break;
-                    case 5:
-                        selectGenreAndBorrowBook(lib, "Non-fiction");
-                        break;
-                    case 6:
-                        selectGenreAndBorrowBook(lib, "Romance");
-                        break;
-                    case 7:
-                        selectGenreAndBorrowBook(lib, "Fantasy");
-                        break;
-                    case 8:
-                        selectGenreAndBorrowBook(lib, "Adventure");
-                        break;
-                    case 9:
-                        selectGenreAndBorrowBook(lib, "Epic");
-                        break;
-                    case 10:
-                        selectGenreAndBorrowBook(lib, "Modernist");
-                        break;
-                    case 11:
-                        selectGenreAndBorrowBook(lib, "Tragedy");
-                        break;
+                    } else {
+                        selectGenreAndBorrowBook(lib, genreChoices[genreChoice]);
+                    }
+                } else {
+                    cout << "Vigane valik. Palun proovi uuesti.\n";
                 }
                 break;
             case 2:
                 cout << "Sisesta raamatu pealkiri, mida soovid laenutada: ";
                 cin.ignore();
                 getline(cin, title);
-                lib->borrowBook(title);
+                lib->borrowBook(title, loggedInUser);
                 break;
             case 3:
                 cout << "Sisesta raamatu pealkiri, mida soovid tagastada: ";
-                cin >> title;
-                lib->removeBook(title);
+                cin.ignore();
+                getline(cin, title);
+                lib->returnBook(title);
                 break;
             case 4:
                 lib->showBorrowedBooks();

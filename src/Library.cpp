@@ -1,10 +1,6 @@
-// Library.cpp
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <sstream>
-#include <vector>
 #include "include/Library.h"
+#include <iostream>
+#include <algorithm>
 #include "include/sqlite3.h"
 
 Library::Library() {}
@@ -18,7 +14,7 @@ void Library::addBook(Book book) {
     }
 }
 
-void Library::removeBook(string name) {
+void Library::removeBook(std::string name) {
     for (auto it = books.begin(); it != books.end(); ++it) {
         if (it->first.getName() == name) {
             books.erase(it);
@@ -27,7 +23,7 @@ void Library::removeBook(string name) {
     }
 }
 
-bool Library::isBookInLibrary(string name) {
+bool Library::isBookInLibrary(std::string name) {
     for (auto it = books.begin(); it != books.end(); ++it) {
         if (it->first.getName() == name) {
             return true;
@@ -36,72 +32,98 @@ bool Library::isBookInLibrary(string name) {
     return false;
 }
 
-void Library::printBookInfo(string name) {
+void Library::printBookInfo(std::string name) {
     for (auto it = books.begin(); it != books.end(); ++it) {
         if (it->first.getName() == name) {
             Book bookInfo = it->first;
-            cout << "Name: " << bookInfo.getName() << endl;
-            cout << "Author: " << bookInfo.getAuthor() << endl;
-            cout << "Pages Count: " << bookInfo.getPagesCount() << endl;
-            cout << "Genre: " << bookInfo.getGenre() << endl;
-            cout << "Quantity: " << it->second << endl;
+            std::cout << "Name: " << bookInfo.getName() << std::endl;
+            std::cout << "Author: " << bookInfo.getAuthor() << std::endl;
+            std::cout << "Pages Count: " << bookInfo.getPagesCount() << std::endl;
+            std::cout << "Genre: " << bookInfo.getGenre() << std::endl;
+            std::cout << "Quantity: " << it->second << std::endl;
             break;
         }
     }
 }
-void Library::getGenre(string genre) {
-    vector<Book> genreBooks;
+
+void Library::getGenre(std::string genre) {
+    std::vector<Book> genreBooks;
     for (const auto& it : books) {
         if (it.first.getGenre() == genre) {
             genreBooks.push_back(it.first);
         }
     }
     if (genreBooks.empty()) {
-        cout << "Selles žanris pole hetkel saadavaid raamatuid" << endl;
+        std::cout << "Selles žanris pole hetkel saadavaid raamatuid" << std::endl;
     } else {
-        cout << "Raamatud žanris '" << genre << "':" << endl;
+        std::cout << "Raamatud žanris '" << genre << "':" << std::endl;
         for (auto &&Book : genreBooks) {
-            cout << Book.getName() << endl;
+            std::cout << Book.getName() << std::endl;
         }
     }
 }
 
-void Library::borrowBook(string name) {
+void Library::borrowBook(std::string name, User* user) {
+    std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+
     for (auto & book : books) {
-        const string &bookname = book.first.getName();
-        if ( bookname == name) {
+        std::string bookname = book.first.getName();
+
+        std::transform(bookname.begin(), bookname.end(), bookname.begin(), ::tolower);
+
+        if (bookname == name) {
             if (book.second > 0) {
                 book.second--;
-                borrowedBooks.push_back(book.first);
-                cout << "Raamatu laenutamine õnnestus!" << endl;
+                borrowedBooks.push_back(std::make_pair(book.first, user)); // Updated
+                std::cout << "Raamatu laenutamine õnnestus!" << std::endl;
             } else {
-                cout << "Rohkem koopiad pole." << endl;
+                std::cout << "Rohkem koopiad pole." << std::endl;
             }
-            break;
+            return;
         }
     }
+    std::cout << "Raamatut ei leitud." << std::endl;
 }
+
 void Library::showBorrowedBooks() const {
-    cout << "Laenutatud raamatud:" << endl;
-    for (const auto & book : borrowedBooks) {
-        cout << "Pealkiri: " << book.getName() << ", Autor: " << book.getAuthor() << endl;
+    std::cout << "Laenutatud raamatud:" << std::endl;
+    for (const auto & borrowed : borrowedBooks) {
+        std::cout << "Pealkiri: " << borrowed.first.getName()
+                  << ", Autor: " << borrowed.first.getAuthor()
+                  << ", Laenutaja: " << borrowed.second->getUsername() << std::endl; // Updated
     }
 }
 
-void Library::returnBook(string name) {
-    for (auto it = books.begin(); it != books.end(); ++it) {
-        if (it->first.getName() == name) {
-            it->second++;
-            cout << "Book returned successfully." << endl;
-            break;
+void Library::returnBook(std::string name) {
+    std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+
+    auto it = std::find_if(borrowedBooks.begin(), borrowedBooks.end(), [&name](const std::pair<Book, User*>& borrowed) {
+        std::string bookName = borrowed.first.getName();
+        std::transform(bookName.begin(), bookName.end(), bookName.begin(), ::tolower);
+        return bookName == name;
+    });
+
+    if (it != borrowedBooks.end()) {
+        for (auto & book : books) {
+            std::string bookName = book.first.getName();
+            std::transform(bookName.begin(), bookName.end(), bookName.begin(), ::tolower);
+
+            if (bookName == name) {
+                book.second++;
+                borrowedBooks.erase(it);
+                std::cout << "Book returned successfully." << std::endl;
+                return;
+            }
         }
+    } else {
+        std::cout << "Book not found in borrowed list." << std::endl;
     }
 }
 
 void Library::showAllBooks() const {
     for (const auto & book : books) {
         Book &x = const_cast<Book &>(book.first);
-        cout << "Title: " << book.first.getName() << ", Count: " << book.second << endl;
+        std::cout << "Title: " << book.first.getName() << ", Count: " << book.second << std::endl;
     }
 }
 
@@ -143,4 +165,3 @@ void Library::addBooksFromDatabase(const std::string& databaseName) {
     sqlite3_finalize(stmt);
     sqlite3_close(db);
 }
-

@@ -1,13 +1,11 @@
-// Library.h
 #ifndef LIBRARY_H
 #define LIBRARY_H
 
-#include <unordered_map>
 #include <map>
-#include "include/Book.h"
-#include "vector"
-
-using namespace std;
+#include <vector>
+#include <string>
+#include "Book.h"
+#include "User.h"
 
 class Library {
 public:
@@ -15,20 +13,19 @@ public:
     ~Library();
 
     void addBook(Book book);
-    void removeBook(string name);
-    bool isBookInLibrary(string name);
-    void printBookInfo(string name);
-    void borrowBook(string name);
-    void returnBook(string name);
-    void showAllBooks() const;
-    void addBooksFromFile(string filename);
-    void getGenre(string name);
+    void removeBook(std::string name);
+    bool isBookInLibrary(std::string name);
+    void printBookInfo(std::string name);
+    void getGenre(std::string genre);
+    void borrowBook(std::string name, User* user);
     void showBorrowedBooks() const;
-    void addBooksFromDatabase(const string &databaseName);
+    void returnBook(std::string name);
+    void showAllBooks() const;
+    void addBooksFromDatabase(const std::string& databaseName);
+
 private:
-    map<Book, int> books;
-    vector<Book> borrowedBooks;
+    std::map<Book, int> books;
+    std::vector<std::pair<Book, User*>> borrowedBooks; // Updated
 };
 
 #endif // LIBRARY_H
-
